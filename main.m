@@ -23,20 +23,20 @@ fprintf(' x = [%.0f %.0f %.0f %.0f %.0f], y = %.0f \n', [X(1:10,:) y(1:10,:)]');
 fprintf('Normalizing Features ...\n');
 
 % having trouble with normalize with gender feature since causes division by 0
-% [X mu sigma] = featureNormalize(X);
+[X mu sigma] = featureNormalize(X);
 
 % Add intercept term to X
 X = [ones(m, 1) X];
 
 % Choose some alpha value
 alpha = 0.01; 
-num_iters = 400; 
+num_iters = 600; 
 
 % Init Theta and Run Gradient Descent 
 theta = zeros(num_features + 1, 1);
 
 % TEST: print out what theta is before
-fprintf(' %f \n', theta);
+%fprintf(' %f \n', theta);
 
 [theta, J_history] = gradientDescent(X, y, theta, alpha, num_iters);
 
@@ -44,12 +44,27 @@ fprintf(' %f \n', theta);
 fprintf(' %f \n', theta);
 
 % Plot the convergence graph
-%figure;
-%plot(1:numel(J_history), J_history, '-b', 'LineWidth', 2);
-%xlabel('Number of iterations');
-%ylabel('Cost J');
+figure;
+plot(1:numel(J_history), J_history, '-b', 'LineWidth', 2);
+xlabel('Number of iterations');
+ylabel('Cost J');
 
 % Display gradient descent's result
+
+% put the sq-ft and num of br in matrix
+grad_test = [255 78 235 44 1];
+
+% normalize the test data
+grad_test_norm = (grad_test-mu)./sigma;
+
+% add 1 to the first column of matrix for intercept 
+grad_test_norm_one = [1, grad_test_norm];
+
+% multiple test data by theta to find the prodicted value of house
+grad_cycle_points = grad_test_norm_one*theta; 
+
+fprintf(['Predicted Cycle Points for your stats ' ...
+         '(using graadient descent):\n %f\n'], fix(grad_cycle_points));
 
 % Solve using normal equation
 fprintf('Solving with normal equations...\n');
